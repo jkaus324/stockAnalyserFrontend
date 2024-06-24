@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  nav ul li {
+    cursor: pointer;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+  
+  .stock-selection {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .stock-list {
+    margin-bottom: 1rem;
+  }
+  
+  .stock-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .indicators {
+    margin-top: 1rem;
+  }
+  
+  .indicators h2 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .selected-stock {
+    margin-bottom: 0.5rem;
+  }
+  
