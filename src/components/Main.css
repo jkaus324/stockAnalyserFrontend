@@ -1,166 +1,182 @@
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
-  
-  .MainPage header {
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-  
-  .MainPage footer {
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  .MainPage .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .MainPage header h1 {
-    margin: 0;
-  }
-  
-  .MainPage nav ul {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .MainPage nav ul li {
-    margin-left: 20px;
-  }
-  
-  .MainPage nav ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .main-content {
-    padding: 100px 20px 80px; /* Add top and bottom padding to avoid overlap with fixed header and footer */
-    text-align: center;
-  }
-  
-  .main-content h2 {
-    font-size: 2.5em;
-  }
-  
-  .main-content .form-container {
-    margin-bottom: 40px;
-  }
-  
-  .main-content p {
-    font-size: 1.2em;
-  }
-  
-  .main-content .form-group {
-    margin: 20px 0;
-  }
-  
-  .main-content label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .main-content select,
-  .main-content input {
-    padding: 10px;
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 20px;
-  }
-  
-  .main-content button {
-    padding: 10px 20px;
-    margin: 10px 0;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .loading-message {
-    color: #e74c3c;
-    font-size: 1.2em;
-    margin: 20px 0;
-  }
-  
-  .stocks-list {
-    margin-top: 20px;
-    text-align: left;
-    width: 100%; /* Ensure full width */
-  }
-  
-  .stocks-list h3 {
-    margin-bottom: 20px;
-  }
-  
-  .stocks-list table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .stocks-list table th,
-  .stocks-list table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .stocks-list table th {
-    background-color: #f2f2f2;
-  }
-  
-  .indicators {
-    margin-top: 20px;
-  }
-  
-  .indicators h3 {
-    margin-bottom: 10px;
-  }
-  
-  .indicators label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  footer .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  
-  footer ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  footer ul li {
-    display: inline;
-    margin-left: 15px;
-  }
-  
-  footer ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.MainPage header {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.MainPage footer {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.MainPage .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.MainPage header h1 {
+  margin: 0;
+}
+
+.MainPage nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.MainPage nav ul li {
+  margin-left: 20px;
+}
+
+.MainPage nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.main-content {
+  padding: 100px 20px 100px;
+  /* Add top and bottom padding to avoid overlap with fixed header and footer */
+  text-align: center;
+}
+
+.main-content h2 {
+  font-size: 2.5em;
+}
+
+.main-content .form-container {
+  margin-bottom: 40px;
+}
+
+.main-content p {
+  font-size: 1.2em;
+}
+
+.main-content .form-group {
+  margin: 20px 0;
+}
+
+.main-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.main-content select,
+.main-content input {
+  padding: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.main-content button {
+  padding: 10px 20px;
+  margin: 10px 0;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.loading-message {
+  color: #e74c3c;
+  font-size: 1.2em;
+  margin: 20px 0;
+}
+
+.stocks-list {
+  margin-top: 20px;
+  text-align: left;
+  width: 100%;
+  max-width: 1200px;
+  /* Added max-width */
+  margin: 20px auto;
+  /* Center the table */
+}
+
+
+.stocks-list h3 {
+  margin-bottom: 20px;
+}
+
+.stocks-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.stocks-list table th,
+.stocks-list table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  /* Changed to center */
+}
+
+.stocks-list table th {
+  background-color: #f8f8f8;
+  /* Slightly lighter background */
+  text-align: center;
+  /* Center the header text */
+}
+
+
+.indicators {
+  margin-top: 20px;
+}
+
+.indicators h3 {
+  margin-bottom: 10px;
+}
+
+.indicators label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+footer ul li {
+  display: inline;
+  margin-left: 15px;
+}
+
+footer ul li a {
+  color: white;
+  text-decoration: none;
+}

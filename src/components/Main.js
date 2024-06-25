@@ -56,7 +56,7 @@ function MainPage() {
     }
   };
 
-  const handleApplyIndicators = () => {
+  const handleApplyIndicators = async () => {
     const indicators = [];
     if (applyEMA) indicators.push('EMA');
     if (applyMMA) indicators.push('MMA');
@@ -71,8 +71,32 @@ function MainPage() {
       return;
     }
 
-    // Implement the logic to apply indicators to selected stocks
-    console.log('Applying indicators', indicators, 'to stocks', selectedStocks);
+    const requestData = {
+      stockList: selectedStocks,
+      period: 10,
+      calculateEMAFlag: applyEMA,
+      calculateMMAFlag: applyMMA,
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/stocks/indicators', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setStocks(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('There was an error applying the indicators. Please try again later.');
+    }
   };
 
   return (
@@ -128,55 +152,6 @@ function MainPage() {
 
           {stocks.length > 0 && (
             <>
-              <div className="stocks-list">
-                <h3>Stocks Below {percentage}%</h3>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>
-                        <input
-                          type="checkbox"
-                          onChange={handleSelectAllStocks}
-                          checked={selectedStocks.length === stocks.length}
-                        />
-                      </th>
-                      <th>Index</th>
-                      <th>Stock Symbol</th>
-                      <th>Current Price</th>
-                      <th>Highest Price</th>
-                      <th>Percentage</th>
-                      <th>Link</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stocks.map((stock, index) => {
-                      const diffPercentage = ((stock.allTimeHigh - stock.currentPrice) / stock.currentPrice) * 100;
-                      return (
-                        <tr key={stock.symbol}>
-                          <td>
-                            <input
-                              type="checkbox"
-                              checked={selectedStocks.includes(stock.symbol)}
-                              onChange={() => handleSelectStock(stock.symbol)}
-                            />
-                          </td>
-                          <td>{index + 1}</td>
-                          <td>{stock.symbol}</td>
-                          <td>{stock.currentPrice}</td>
-                          <td>{stock.allTimeHigh}</td>
-                          <td>{diffPercentage.toFixed(2)}%</td>
-                          <td>
-                            <a href={`https://finance.yahoo.com/quote/${stock.symbol}.NS`} target="_blank" rel="noopener noreferrer">
-                              Yahoo Finance
-                            </a>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
               <div className="indicators">
                 <h3>Apply Indicators</h3>
                 <label>
@@ -197,8 +172,62 @@ function MainPage() {
                 </label>
                 <button onClick={handleApplyIndicators}>Apply Indicators</button>
               </div>
+
+              <div className="stocks-list">
+                <h3>Stocks Below {percentage}%</h3>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        <input
+                          type="checkbox"
+                          onChange={handleSelectAllStocks}
+                          checked={selectedStocks.length === stocks.length}
+                        />
+                      </th>
+                      <th>Index</th>
+                      <th>Stock Symbol</th>
+                      <th>Current Price</th>
+                      <th>Highest Price</th>
+                      <th>Percentage</th>
+                      {stocks.some(stock => stock.ema) && <th>EMA</th>}
+                      {stocks.some(stock => stock.mma) && <th>MMA</th>}
+                      <th>Link</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stocks.map((stock, index) => {
+                      const diffPercentage = ((stock.highestPrice - stock.currentPrice) / stock.currentPrice) * 100;
+                      return (
+                        <tr key={stock.symbol}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedStocks.includes(stock.symbol)}
+                              onChange={() => handleSelectStock(stock.symbol)}
+                            />
+                          </td>
+                          <td>{index + 1}</td>
+                          <td>{stock.symbol}</td>
+                          <td>{stock.currentPrice}</td>
+                          <td>{stock.highestPrice}</td>
+                          <td>{diffPercentage.toFixed(2)}%</td>
+                          {stock.ema && <td>{stock.ema.join(', ')}</td>}
+                          {stock.mma && <td>{stock.mma.join(', ')}</td>}
+                          <td>
+                            <a href={`https://finance.yahoo.com/quote/${stock.symbol}.NS`} target="_blank" rel="noopener noreferrer">
+                              Yahoo Finance
+                            </a>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </>
           )}
+
         </div>
       </section>
 
@@ -214,6 +243,7 @@ function MainPage() {
       </footer>
     </div>
   );
+
 }
 
 export default MainPage;
