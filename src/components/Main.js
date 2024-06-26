@@ -11,6 +11,8 @@ function MainPage() {
   const [selectedStocks, setSelectedStocks] = useState([]);
   const [applyEMA, setApplyEMA] = useState(false);
   const [applyMMA, setApplyMMA] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleGetIndices = () => {
     axios.get('http://localhost:5000/api/getindices') // Ensure this matches your backend URL
@@ -28,6 +30,7 @@ function MainPage() {
       axios.get(`http://localhost:5000/api/stocks/${selectedIndex}/${percentage}`) // Ensure this matches your backend URL
         .then(response => {
           setStocks(response.data);
+          console.log(stocks);
         })
         .catch(error => {
           console.error('There was an error fetching the stocks!', error);
@@ -79,12 +82,18 @@ function MainPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/stocks/indicators', {
-        method: 'POST',
+      const queryString = new URLSearchParams({
+        stockList: JSON.stringify(selectedStocks),
+        period: 10,
+        calculateEMAFlag: applyEMA,
+        calculateMMAFlag: applyMMA,
+      }).toString();
+      
+      const response = await fetch(`http://localhost:5000/api/stocks/indicators?${queryString}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData),
       });
 
       if (!response.ok) {
@@ -97,6 +106,28 @@ function MainPage() {
       console.error('Error fetching data:', error);
       alert('There was an error applying the indicators. Please try again later.');
     }
+  };
+
+  const handleSendEmail = () => {
+    if (!email) {
+      alert('Please enter an email address.');
+      return;
+    }
+
+    const requestData = {
+      email: email,
+      stocks: stocks,
+    };
+
+    axios.post('http://localhost:5000/api/send-email', requestData)
+      .then(response => {
+        alert('Email sent successfully!');
+        setEmailSent(true);
+      })
+      .catch(error => {
+        console.error('There was an error sending the email!', error);
+        alert('There was an error sending the email. Please try again later.');
+      });
   };
 
   return (
@@ -190,14 +221,14 @@ function MainPage() {
                       <th>Current Price</th>
                       <th>Highest Price</th>
                       <th>Percentage</th>
-                      {stocks.some(stock => stock.ema) && <th>EMA</th>}
-                      {stocks.some(stock => stock.mma) && <th>MMA</th>}
+                      {applyEMA ? <th>EMA</th> : null}
+                      {applyMMA ? <th>MMA</th> : null}
                       <th>Link</th>
                     </tr>
                   </thead>
                   <tbody>
                     {stocks.map((stock, index) => {
-                      const diffPercentage = ((stock.highestPrice - stock.currentPrice) / stock.currentPrice) * 100;
+                      const diffPercentage = ((stock.allTimeHigh - stock.currentPrice) / stock.currentPrice) * 100;
                       return (
                         <tr key={stock.symbol}>
                           <td>
@@ -210,10 +241,10 @@ function MainPage() {
                           <td>{index + 1}</td>
                           <td>{stock.symbol}</td>
                           <td>{stock.currentPrice}</td>
-                          <td>{stock.highestPrice}</td>
+                          <td>{stock.allTimeHigh}</td>
                           <td>{diffPercentage.toFixed(2)}%</td>
-                          {stock.ema && <td>{stock.ema.join(', ')}</td>}
-                          {stock.mma && <td>{stock.mma.join(', ')}</td>}
+                          {applyEMA ? <td>{stock.ema}</td> : null}
+                          {applyMMA ? <td>{stock.mma}</td> : null}
                           <td>
                             <a href={`https://finance.yahoo.com/quote/${stock.symbol}.NS`} target="_blank" rel="noopener noreferrer">
                               Yahoo Finance
@@ -225,9 +256,24 @@ function MainPage() {
                   </tbody>
                 </table>
               </div>
+
+              {!emailSent && (
+                <div className="email-section">
+                  <h3>Send Data via Email</h3>
+                  <div className="form-group">
+                    <label htmlFor="email">Enter Email:</label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <button onClick={handleSendEmail}>Send Email</button>
+                </div>
+              )}
             </>
           )}
-
         </div>
       </section>
 
@@ -243,7 +289,6 @@ function MainPage() {
       </footer>
     </div>
   );
-
 }
 
 export default MainPage;
