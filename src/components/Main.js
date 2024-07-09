@@ -31,6 +31,7 @@ function MainPage() {
         .then(response => {
           setStocks(response.data);
           console.log(stocks);
+          console.log(response.data);
         })
         .catch(error => {
           console.error('There was an error fetching the stocks!', error);
@@ -63,24 +64,17 @@ function MainPage() {
     const indicators = [];
     if (applyEMA) indicators.push('EMA');
     if (applyMMA) indicators.push('MMA');
-
+  
     if (indicators.length === 0) {
       alert('Please select at least one indicator.');
       return;
     }
-
+  
     if (selectedStocks.length === 0) {
       alert('Please select at least one stock.');
       return;
     }
-
-    const requestData = {
-      stockList: selectedStocks,
-      period: 10,
-      calculateEMAFlag: applyEMA,
-      calculateMMAFlag: applyMMA,
-    };
-
+  
     try {
       const queryString = new URLSearchParams({
         stockList: JSON.stringify(selectedStocks),
@@ -88,18 +82,21 @@ function MainPage() {
         calculateEMAFlag: applyEMA,
         calculateMMAFlag: applyMMA,
       }).toString();
-      
+  
       const response = await fetch(`http://localhost:5000/api/stocks/indicators?${queryString}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
+      console.log('Response Status:', response.status);
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        const errorText = await response.text();
+        console.error('Error Response:', errorText);
+        throw new Error(`Network response was not ok: ${response.status}`);
       }
-
+  
       const data = await response.json();
       setStocks(data);
     } catch (error) {
@@ -107,19 +104,21 @@ function MainPage() {
       alert('There was an error applying the indicators. Please try again later.');
     }
   };
+  
+  
 
   const handleSendEmail = () => {
     if (!email) {
       alert('Please enter an email address.');
       return;
     }
-
-    const requestData = {
-      email: email,
-      stocks: stocks,
-    };
-
-    axios.post('http://localhost:5000/api/send-email', requestData)
+    if (!selectedIndex) {
+      alert('Please select a category.');
+      return;
+    }
+  
+    // Send the request to the backend
+    axios.get(`http://localhost:5000/api/stocks/report/${selectedIndex}/${email}`)
       .then(response => {
         alert('Email sent successfully!');
         setEmailSent(true);
@@ -129,6 +128,7 @@ function MainPage() {
         alert('There was an error sending the email. Please try again later.');
       });
   };
+  
 
   return (
     <div className="MainPage">
