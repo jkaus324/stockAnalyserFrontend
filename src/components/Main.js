@@ -106,7 +106,6 @@ function MainPage() {
   };
   
   
-
   const handleSendEmail = () => {
     if (!email) {
       alert('Please enter an email address.');
